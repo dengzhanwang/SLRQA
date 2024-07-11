@@ -75,11 +75,11 @@ close all
 draw_option = 1;
 %load A_t2.mat;
 lowrank = 0
-if lowrank == 0
-load SLRQA2info.mat
-else
-load SLRQA2_lowrankinfo60.mat
-end
+% if lowrank == 0
+% load SLRQA2info.mat
+% else
+% load SLRQA2_lowrankinfo60.mat
+% end
 
 for jj= 5
     corrupt=jj/10;

@@ -71,15 +71,15 @@ rng('default')
 % 
 % end
 %%
-close all
-draw_option = 1;
-%load A_t2.mat;
+% close all
+% draw_option = 1;
+% %load A_t2.mat;
 lowrank = 0
-if lowrank == 0
-load SLRQAinfo.mat
-else
- load   SLRQA_lowrankinfo60.mat
-end
+% if lowrank == 0
+% load SLRQAinfo.mat
+% else
+%  load   SLRQA_lowrankinfo60.mat
+% end
 
 for jj= [1:8]
     corrupt=jj/10;
