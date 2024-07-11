@@ -1,0 +1,53 @@
+--------------------------------------------------------------
+                Quaternion toolbox for Matlab
+                http://qtfm.sourceforge.net/
+       Mailing list: qtfm-announce@lists.sourceforge.net
+--------------------------------------------------------------
+Copyright © 2005-2021 Stephen J. Sangwine & Nicolas Le Bihan
+Email: sangwine@users.sourceforge.net
+       nicolas.le-bihan@gipsa-lab.inpg.fr
+--------------------------------------------------------------
+
+                     Release Notes
+
+Version 3.1  31 August 2021
+
+With this release, we have extended the symbolic capability to octonions.
+However, this should be regarded as experimental at this stage.
+ 
+Some incremental improvements have been made to the quaternion symbolic
+capability to improve output. The handling of undefined axis values has
+been centralised in a new private function in order to permit functions
+that have to handle undefined axis to work with symbolic arguments.
+
+New symbolic functions implemented: sym.
+
+Version 3.0  20 July 2020
+
+The toolbox now supports some symbolic computation with quaternions,
+provided that the MATLAB Symbolic Math Toolbox is installed (if it isn't
+the numeric functionality of QTFM should not be affected, but obviously
+the symbolic functions won't work). Test code is provided, but it will run
+only if the Symbolic Math Toolbox is detected (after the numeric tests have
+completed). Symbolic computation with octonions is not implemented in this
+release, but is intended to be provided in a later release. An example
+script is included in the /examples directory. See also the help
+documentation and the test code, which carries out some theorem proving
+tests that exercise the symbolic code in a non-trivial way.
+
+The sylvester function, introduced in QTFM 2.5, has been re-coded to use a
+direct quaternion algorithm by Janovska and Opfer.
+
+The function arrayfun is now implemented (overloading of standard Matlab
+function). It operates by a fairly crude method of iterating over the array
+elements and is therefore not expected to be fast.
+
+All source code files should now be in UTF-8 encoding (this is now the
+standard file encoding for MATLAB .m files).
+
+
+(For earlier release notes see version 2.8 which was the version preceding
+version 3.0, or see earlier versions of this file in the Sourceforge SVN
+repository - or the CVS repository for very old versions.)
+
+$Id: Release_notes.txt 1128 2021-08-31 20:17:33Z sangwine $
