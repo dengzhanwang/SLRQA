@@ -31,8 +31,7 @@ run SLRQANF3example.m
 ```
 
 **References**
-[1] Yokota T, Zhao Q, Cichocki A. Smooth PARAFAC decomposition for tensor completion[J]. IEEE Transactions on Signal Processing, 2016, 64(20): 5423 - 5436.
-```
 
-### Explanation of Image and Article Usage
-- **Unsplash Images**: The images used in this project are sourced from Unsplash, a platform that provides high-quality, royalty-free images. These images are free to use for any purpose, including commercial use, without the need for attribution. This ensures that the images used in the project are legally and ethically sourced.
+
+[1] Yokota T, Zhao Q, Cichocki A. Smooth PARAFAC decomposition for tensor completion[J]. IEEE Transactions on Signal Processing, 2016, 64(20): 5423 - 5436.
+
