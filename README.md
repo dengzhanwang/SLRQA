@@ -2,7 +2,7 @@
 
 ## Project Summary
 
-This MATLAB project implements the "Sparse Low-Rank Quaternion Model for Color Image Processing" as outlined in the associated scientific paper *Smooth PARAFAC Decomposition for Tensor Completion* by Yokota T, Zhao Q, and Cichocki A. [1]. It provides a comprehensive framework for applying quaternion models to color image processing tasks.
+This MATLAB project implements the "Sparse Low-Rank Quaternion Model for Color Image Processing" as outlined in the associated scientific paper. It provides a comprehensive framework for applying quaternion models to color image processing tasks.
 
 ## Code Structure
 
