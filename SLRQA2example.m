@@ -12,9 +12,7 @@ address=['./imagedata/'];
 % infomat=cell(8,8);
 rng('default')
 
-% ii=1;
 
-%% 纯四元化(初始化)
 % for ii = [4 6 7 8]
 % dataadress = strcat('./imagedata/image',num2str(ii),'.png');
 % A=cast(imreadq(dataadress), 'double') ./ 255;
