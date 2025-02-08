@@ -85,13 +85,13 @@ while(1)
     nrm2(iter)=norm(norm(t2,'fro'))
     max(norm(t1,'fro'),norm(t2,'fro'));
 
-    if nrm1(iter)+nrm2(iter) < 1 &&  nrm1(iter)+nrm2(iter) >  5e-1
-        params.epsilon = 1e-2;
-    elseif nrm1(iter)+nrm2(iter) < 5e-1 && nrm1(iter)+nrm2(iter) > 1e-1
-        params.epsilon = 1e-3;
-    elseif nrm1(iter)+nrm2(iter) < 1e-1
-        params.epsilon = 1e-4;
-    end
+    %     if nrm1(iter)+nrm2(iter) < 1 &&  nrm1(iter)+nrm2(iter) >  5e-1
+    %         params.epsilon = 1;
+    %     elseif nrm1(iter)+nrm2(iter) < 5e-1 && nrm1(iter)+nrm2(iter) > 1e-1
+    %         params.epsilon = 1e-2;
+    %     elseif nrm1(iter)+nrm2(iter) < 1e-1
+    params.epsilon = 1e-6;
+    %     end
 
     if (nrm1(iter)+nrm2(iter)<1e-2)%||iter>30
         %      if (qfro(A-W)<params.eps)%||iter>30
@@ -257,6 +257,7 @@ while(1)
         break;
     end
     sigmac=sigma_new;
+    sigmac= max(1e-7,sigmac);
 end
 S2(1:rk,1:rk)=diag(sigma_new);
 % end

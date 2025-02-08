@@ -319,7 +319,7 @@ saveas(gcf,'./result/inpaint/SLRQA/compssim357.png')
 % bb.ssimq-aa.ssimq
 % bb.psnrq-aa.psnrq
 function [y,grad]=Schatten_gamma(x,gamma,sigmay)
-y=x.^gamma;
+y=(x+1e-10).^gamma;
 grad=gamma*x.^(gamma-1);
 end
 

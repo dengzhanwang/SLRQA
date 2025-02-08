@@ -72,20 +72,20 @@ rng('default')
 % end
 %%
 close all
-draw_option = 0;
+draw_option = 1;
 %load A_t2.mat;
 lowrank = 0
 if lowrank == 0
-load SLRQA3info.mat
+load SLRQAinfo.mat
 else
-load SLRQA3_lowrankinfo60.mat
+ load   SLRQA_lowrankinfo60.mat
 end
 
-for jj= [3 5 7 8]
+for jj= [7]
     corrupt=jj/10;
     seed=2099;
     rng(seed);
-    for ii= 6:7
+    for ii= 1:10
         if lowrank == 0
             dataadress = strcat('./imagedata/image',num2str(ii),'.png');
             A=cast(imreadq(dataadress), 'double') ./ 255;
@@ -153,17 +153,17 @@ for jj= [3 5 7 8]
         params.loss=1-omega_real;
         params.eps=1e-4;
         params.epsilon = 1e-4;
-        params.lambda=0.1;
+        params.lambda=0.05;
         params.alpha=0.85;
         params.eta1=3;
         params.rho=1.1;
-        params.Lk1 = 0.01;
-        params.Lk2 = 0.01;
+        params.Lk1 = 1;
+        params.Lk2 = 1;
         params.gamma=0.7;
         params.mu=5;
         params.verbose=2;%意味着有输出
         params.eta2=3;
-        params.phi=@WSchatten_gamma;
+        params.phi=@Schatten_gamma;
         params.lambda_y1=quaternion(zeros(params.m,params.n),zeros(params.m,params.n),zeros(params.m,params.n),zeros(params.m,params.n));
         params.lambda_y2=quaternion(zeros(params.m,params.n),zeros(params.m,params.n),zeros(params.m,params.n),zeros(params.m,params.n));
         % params.lambda_y1=zeros(params.m,params.n,4);
@@ -184,57 +184,59 @@ for jj= [3 5 7 8]
         params.type=1;
         Ac = qtoc(A*params.Anorm);
         params.isq = 1;
-
+        % imageq(temp)
+        % tempc = qtoc(temp);
+        % qdraw(temp,[200 300],[200 300]);
         tic
         [Xopt,info]=SLRQA_slover(params);
         toc
         infomat{ii,jj}=info;
         Xoptc=qtoc(Xopt*params.Anorm);
-        psnrq(ii,jj) = psnr(Xoptc,Ac);
+        psnrq(ii,jj) = psnr(Ac,Xoptc);
         ssimq(ii,jj)=ssim(Ac,Xoptc);
 
-%         if draw_option == 1
-%             close all
-%             figure(2)
-%             set(gcf,'Position',[300 300 500 500]);
-%             set(gca,'Position',[0 0 1 1]);
+        if draw_option == 1
+            close all
+            figure(2)
+            set(gcf,'Position',[300 300 500 500]);
+            set(gca,'Position',[0 0 1 1]);
 %             imagesc(Xoptc)
-%             qdraw(Xopt*params.Anorm,[200 300],[200 300]);
-%             axis off
-%             adress = strcat('./result/inpaint/SLRQA3/imageq',num2str(ii),'_',num2str(corrupt*100),'.png');
-%             saveas(gcf, adress)
-%             close all
-%         end
-% 
-%         imageq(Xopt*params.Anorm)
-%         tempc = qtoc(temp);
-%         qdraw(Xopt*params.Anorm,[200 300],[200 300]);
-%         imagename=strcat('image',num2str(ii),'with',num2str(corrupt*100),'SLRQA3q.png');
-%         exportgraphics(gcf,imagename,'Resolution',1000);
-%         axis off
-%         params.type=2;
-%         params.lambda_y2=zeros(params.m,params.n);
-%         params.lambda_y1=zeros(params.m,params.n);
-%         params.x0=A1;
-%         params.w0=A1;
-%         params.isq = 0;
-%         tic
-%         [Xopt1,info]=SLRQA_slover(params);
-%         params.x0=A2;
-%         params.w0=A2;
-% 
-%         [Xopt2,info]=SLRQA_slover(params);
-%         params.x0=A3;
-%         params.w0=A3;
-%         [Xopt3,info]=SLRQA_slover(params);
-%         toc
-%         %
-%         Xopt_sp =quaternion(zeros(params.m,params.n),Xopt1, Xopt2, Xopt3);
-%         Xopt_sp=Xopt_sp*params.Anorm;
-%         Xopt_spc=qtoc(Xopt_sp);
+            qdraw(Xopt*params.Anorm,[200 300],[200 300]);
+            axis off
+            adress = strcat('./result/inpaint/SLRQA/imageq',num2str(ii),'_',num2str(corrupt*100),'.png');
+            saveas(gcf, adress)
+            close all
+        end
+
+        % imageq(Xopt*params.Anorm)
+        % tempc = qtoc(temp);
+        % qdraw(Xopt*params.Anorm,[200 300],[200 300]);
+        % imagename=strcat('image',num2str(ii),'with',num2str(corrupt*100),'LADMq.png');
+        % exportgraphics(gcf,imagename,'Resolution',1000);
+        axis off
+        params.type=2;
+        params.lambda_y2=zeros(params.m,params.n);
+        params.lambda_y1=zeros(params.m,params.n);
+        params.x0=A1;
+        params.w0=A1;
+        params.isq = 0;
+        tic
+        [Xopt1,info]=SLRQA_slover(params);
+        params.x0=A2;
+        params.w0=A2;
+
+        [Xopt2,info]=SLRQA_slover(params);
+        params.x0=A3;
+        params.w0=A3;
+        [Xopt3,info]=SLRQA_slover(params);
+        toc
+        %
+        Xopt_sp =quaternion(zeros(params.m,params.n),Xopt1, Xopt2, Xopt3);
+        Xopt_sp=Xopt_sp*params.Anorm;
+        Xopt_spc=qtoc(Xopt_sp);
         % imageq(Xopt_sp);
 
-%         if draw_option == 1
+        if draw_option == 1
             % figure(3)
             % set(gcf,'Position',[300 300 500 500]);
             % set(gca,'Position',[0 0 1 1]);
@@ -245,70 +247,71 @@ for jj= [3 5 7 8]
             % saveas(gcf, adress)
 
             % close all
-%         end
+        end
 
-%         psnrsp(ii,jj) = psnr(Xopt_spc,Ac);
-%         ssimsp(ii,jj) = ssim(Ac,Xopt_spc);
+        psnrsp(ii,jj) = psnr(Xopt_spc,Ac);
+        ssimsp(ii,jj) = ssim(Ac,Xopt_spc);
         % imagename=strcat('image',num2str(ii),'with',num2str(corrupt*100),'LADMsp.png');
         % exportgraphics(gcf,imagename,'Resolution',1000);
         axis off
-%         [U S V]=qsvddiy(Xopt);
-%         rank(S)
-%         diff_maxXopt=max(max(abs(A-Xopt)));
-%         % diff_maxXoptsp=max(max(abs(A-Xopt_sp)))
-%         temp=Xopt*params.Anorm;
-%         Output_image=quaternion(zeros(params.m,params.n),x(temp),y(temp),z(temp));
-%         % imageq(Output_image)
-%         norm(Xopt-A ,'fro')/norm(A,'fro');
+        [U S V]=qsvddiy(Xopt);
+        rank(S)
+        diff_maxXopt=max(max(abs(A-Xopt)));
+        % diff_maxXoptsp=max(max(abs(A-Xopt_sp)))
+        temp=Xopt*params.Anorm;
+        Output_image=quaternion(zeros(params.m,params.n),x(temp),y(temp),z(temp));
+        % imageq(Output_image)
+        norm(Xopt-A ,'fro')/norm(A,'fro');
         % norm(Xopt_sp-A ,'fro')/norm(A,'fro')
         % psnrsp(ii)=psnr(A,Xopt_sp);
 
         % Xopt_sp=qtoc(Xopt_sp*params.Anorm);
 
         
-%         if lowrank == 0
-%             save(strcat('./result/inpaint/SLRQA3/SLRQA3info.mat'),'psnrq','ssimq','psnrsp','ssimsp',"infomat")
-%         else
-%             save(strcat('./result/inpaint/SLRQA3/SLRQA3_lowrankinfo60.mat'),'psnrq','ssimq','psnrsp','ssimsp',"infomat")
-%         end
+
     end
 end
-1;
+
+        if lowrank == 0
+            save(strcat('./result/inpaint/SLRQA/SLRQAinfo.mat'),'psnrq','ssimq','psnrsp','ssimsp',"infomat")
+        else
+            save(strcat('./result/inpaint/SLRQA/SLRQA_lowrankinfo60.mat'),'psnrq','ssimq','psnrsp','ssimsp',"infomat")
+        end
 if lowrank == 0
-    save(strcat('./result/inpaint/SLRQA3/SLRQA3info.mat'),'psnrq','ssimq','psnrsp','ssimsp',"infomat")
+    save(strcat('./result/inpaint/SLRQA/SLRQAinfo.mat'),'psnrq','ssimq','psnrsp','ssimsp',"infomat")
 else
-    save(strcat('./result/inpaint/SLRQA3/SLRQA3_lowrankinfo60.mat'),'psnrq','ssimq','psnrsp','ssimsp',"infomat")
+    save(strcat('./result/inpaint/SLRQA/SLRQA_lowrankinfo60.mat'),'psnrq','ssimq','psnrsp','ssimsp',"infomat")
 end
 
 index = [3 5 7];
 close all
 figure(1)
-plot(psnrq(:,3),'b-','linewidth',2)
+plot(psnrq(:,3),'b-*','linewidth',2)
 hold on
-plot(psnrq(:,5),'b-.','linewidth',2)
-plot(psnrq(:,7),'b:','linewidth',2)
-plot(psnrsp(:,3),'r-','linewidth',2)
-plot(psnrsp(:,5),'r-.','linewidth',2)
-plot(psnrsp(:,7),'r:','linewidth',2)
-axis([1 8 15 45])
-legend('SLRQA(Q)-30','SLRQA(Q)-50','SLRQA(Q)-70','SLRQA(RGB)-30','SLRQA(RGB)-50','SLRQA(RGB)-70','Location','southeast')
+plot(psnrq(:,5),'b-.*','linewidth',2)
+plot(psnrq(:,7),'b:*','linewidth',2)
+plot(psnrsp(:,3),'r-o','linewidth',2)
+plot(psnrsp(:,5),'r-.o','linewidth',2)
+plot(psnrsp(:,7),'r:o','linewidth',2)
+axis([1 10 10 45])
+legend('SLRQA-NF-1(Q)-0.3','SLRQA-NF-1(Q)-0.5','SLRQA-NF-1(Q)-0.7','SLRQA-NF-1(RGB)-0.3','SLRQA-NF-1(RGB)-0.5','SLRQA-NF-1(RGB)-0.7','Location','southwest')
 xlabel('Image Index','FontSize',15)
 ylabel('PSNR','FontSize',15)
 % save(strcat('./result/inpaint/SLRQA/SLRQAinfo.mat'),'psnrq','ssimq','psnrsp','ssimsp')
-saveas(gcf,'./result/inpaint/SLRQA3/comppsnr.png')
+saveas(gcf,'./result/inpaint/SLRQA/comppsnr357.png')
 figure(2)
-plot(ssimq(:,3),'b-','linewidth',2)
+plot(ssimq(:,3),'b-*','linewidth',2)
 hold on
-plot(ssimq(:,5),'b-.','linewidth',2)
-plot(ssimq(:,7),'b:','linewidth',2)
-plot(ssimsp(:,3),'r-','linewidth',2)
-plot(ssimsp(:,5),'r-.','linewidth',2)
-plot(ssimsp(:,7),'r:','linewidth',2)
-axis([1 8 0.75 1])
-legend('SLRQA(Q)-30','SLRQA(Q)-50','SLRQA(Q)-70','SLRQA(RGB)-30','SLRQA(RGB)-50','SLRQA(RGB)-70','Location','southeast')
+plot(ssimq(:,5),'b-.*','linewidth',2)
+plot(ssimq(:,7),'b:*','linewidth',2)
+plot(ssimsp(:,3),'r-o','linewidth',2)
+plot(ssimsp(:,5),'r-.o','linewidth',2)
+plot(ssimsp(:,7),'r:o','linewidth',2)
+axis([1 10 0.5 1])
+legend('SLRQA-NF-1(Q)-0.3','SLRQA-NF-1(Q)-0.5','SLRQA-NF-1(Q)-0.7','SLRQA-NF-1(RGB)-0.3','SLRQA-NF-1(RGB)-0.5','SLRQA-NF-1(RGB)-0.7','Location','southwest')
 xlabel('Image Index','FontSize',15)
 ylabel('SSIM','FontSize',15)
-saveas(gcf,'./result/inpaint/SLRQA3/compssim.png')
+saveas(gcf,'./result/inpaint/SLRQA/compssim357.png')
 % aa=load("LADM50.mat");
 % psnrq=aa.psnrq;
 % psnrsp=aa.psnrsp;
@@ -317,25 +320,9 @@ saveas(gcf,'./result/inpaint/SLRQA3/compssim.png')
 % bb=load("SLRQA50.mat");
 % bb.ssimq-aa.ssimq
 % bb.psnrq-aa.psnrq
-% function [y,grad]=Schatten_gamma(x,gamma)
-% y=x.^gamma;
-% grad=gamma*x.^(gamma-1);
-% end
-function [y,grad]=WSchatten_gamma(x,gamma,sigmay)
-    n = length(x);
-    w = sqrt(n)/100/sqrt(2)./(sigmay+0.1);
-%     w = ones(size(n));
-    y=w.*x.^gamma;
-    grad=w.*gamma.*sqrt(x.^2).^(gamma-1);
-end
-
-function [y,grad]=Schatten_gamma(x,gamma)
-y=x.^gamma;
+function [y,grad]=Schatten_gamma(x,gamma,sigmay)
+y= (x+1e-10).^gamma;
 grad=gamma*x.^(gamma-1);
 end
 
-function [y,grad]=Laplace(x,gamma)
-    y=1-exp(-x./gamma);
-    grad=1./gamma*exp(-x./gamma);
-end
 

@@ -5,11 +5,11 @@ fprintf('Adding GROPT paths from %s...\n',pwd);
 addpath(genpath(pwd));
 %图片
 address=['./imagedata/'];
-ssimq=zeros(8,8);
-ssimsp=zeros(8,8);
-psnrq=zeros(8,8);
-psnrsp=zeros(8,8);
-infomat=cell(8,8);
+% ssimq=zeros(8,8);
+% ssimsp=zeros(8,8);
+% psnrq=zeros(8,8);
+% psnrsp=zeros(8,8);
+% infomat=cell(8,8);
 rng('default')
 
 % ii=1;
@@ -76,12 +76,12 @@ draw_option = 0;
 %load A_t2.mat;
 lowrank = 0
 if lowrank == 0
-load SLRQA3info.mat
+load SLRQA2info.mat
 else
-load SLRQA3_lowrankinfo60.mat
+load SLRQA2_lowrankinfo60.mat
 end
 
-for jj= [3 5 7 8]
+for jj= 1:8
     corrupt=jj/10;
     seed=2099;
     rng(seed);
@@ -151,19 +151,18 @@ for jj= [3 5 7 8]
         params.x0=input_image;
         params.omega=omega_real;
         params.loss=1-omega_real;
-        params.eps=1e-4;
         params.epsilon = 1e-4;
-        params.lambda=0.1;
+        params.lambda=0.01;
         params.alpha=0.85;
         params.eta1=3;
         params.rho=1.1;
         params.Lk1 = 0.01;
         params.Lk2 = 0.01;
-        params.gamma=0.7;
+        params.gamma=2;
         params.mu=5;
         params.verbose=2;%意味着有输出
         params.eta2=3;
-        params.phi=@WSchatten_gamma;
+        params.phi=@Laplace;
         params.lambda_y1=quaternion(zeros(params.m,params.n),zeros(params.m,params.n),zeros(params.m,params.n),zeros(params.m,params.n));
         params.lambda_y2=quaternion(zeros(params.m,params.n),zeros(params.m,params.n),zeros(params.m,params.n),zeros(params.m,params.n));
         % params.lambda_y1=zeros(params.m,params.n,4);
@@ -184,33 +183,35 @@ for jj= [3 5 7 8]
         params.type=1;
         Ac = qtoc(A*params.Anorm);
         params.isq = 1;
-
+        % imageq(temp)
+        % tempc = qtoc(temp);
+        % qdraw(temp,[200 300],[200 300]);
         tic
         [Xopt,info]=SLRQA_slover(params);
         toc
         infomat{ii,jj}=info;
         Xoptc=qtoc(Xopt*params.Anorm);
-        psnrq(ii,jj) = psnr(Xoptc,Ac);
-        ssimq(ii,jj)=ssim(Ac,Xoptc);
+        psnrq(ii,jj) = psnr(Xoptc,Ac)
+        ssimq(ii,jj)=ssim(Ac,Xoptc)
 
-%         if draw_option == 1
-%             close all
-%             figure(2)
-%             set(gcf,'Position',[300 300 500 500]);
-%             set(gca,'Position',[0 0 1 1]);
+        if draw_option == 1
+            close all
+            figure(2)
+            set(gcf,'Position',[300 300 500 500]);
+            set(gca,'Position',[0 0 1 1]);
 %             imagesc(Xoptc)
-%             qdraw(Xopt*params.Anorm,[200 300],[200 300]);
-%             axis off
-%             adress = strcat('./result/inpaint/SLRQA3/imageq',num2str(ii),'_',num2str(corrupt*100),'.png');
-%             saveas(gcf, adress)
-%             close all
-%         end
-% 
-%         imageq(Xopt*params.Anorm)
-%         tempc = qtoc(temp);
-%         qdraw(Xopt*params.Anorm,[200 300],[200 300]);
-%         imagename=strcat('image',num2str(ii),'with',num2str(corrupt*100),'SLRQA3q.png');
-%         exportgraphics(gcf,imagename,'Resolution',1000);
+            qdraw(Xopt*params.Anorm,[200 300],[200 300]);
+            axis off
+            adress = strcat('./result/inpaint/SLRQA2/imageq',num2str(ii),'_',num2str(corrupt*100),'.png');
+            saveas(gcf, adress)
+            close all
+        end
+
+        % imageq(Xopt*params.Anorm)
+        % tempc = qtoc(temp);
+        % qdraw(Xopt*params.Anorm,[200 300],[200 300]);
+        % imagename=strcat('image',num2str(ii),'with',num2str(corrupt*100),'LADMq.png');
+        % exportgraphics(gcf,imagename,'Resolution',1000);
 %         axis off
 %         params.type=2;
 %         params.lambda_y2=zeros(params.m,params.n);
@@ -232,34 +233,34 @@ for jj= [3 5 7 8]
 %         Xopt_sp =quaternion(zeros(params.m,params.n),Xopt1, Xopt2, Xopt3);
 %         Xopt_sp=Xopt_sp*params.Anorm;
 %         Xopt_spc=qtoc(Xopt_sp);
-        % imageq(Xopt_sp);
-
+%         % imageq(Xopt_sp);
+% 
 %         if draw_option == 1
-            % figure(3)
-            % set(gcf,'Position',[300 300 500 500]);
-            % set(gca,'Position',[0 0 1 1]);
-            % qdraw(Xopt_sp,[200 300],[200 300]);
-            % imagesc(Xopt_sp)
-            % axis off
-            % adress = strcat('./result/inpaint/SLRQA/imagesp',num2str(ii),'_',num2str(corrupt*100),'.png');
-            % saveas(gcf, adress)
-
-            % close all
+%             % figure(3)
+%             % set(gcf,'Position',[300 300 500 500]);
+%             % set(gca,'Position',[0 0 1 1]);
+%             % qdraw(Xopt_sp,[200 300],[200 300]);
+%             % imagesc(Xopt_sp)
+%             % axis off
+%             % adress = strcat('./result/inpaint/SLRQA/imagesp',num2str(ii),'_',num2str(corrupt*100),'.png');
+%             % saveas(gcf, adress)
+% 
+%             % close all
 %         end
-
+% 
 %         psnrsp(ii,jj) = psnr(Xopt_spc,Ac);
 %         ssimsp(ii,jj) = ssim(Ac,Xopt_spc);
-        % imagename=strcat('image',num2str(ii),'with',num2str(corrupt*100),'LADMsp.png');
-        % exportgraphics(gcf,imagename,'Resolution',1000);
-        axis off
+%         % imagename=strcat('image',num2str(ii),'with',num2str(corrupt*100),'LADMsp.png');
+%         % exportgraphics(gcf,imagename,'Resolution',1000);
+%         axis off
 %         [U S V]=qsvddiy(Xopt);
 %         rank(S)
 %         diff_maxXopt=max(max(abs(A-Xopt)));
 %         % diff_maxXoptsp=max(max(abs(A-Xopt_sp)))
 %         temp=Xopt*params.Anorm;
 %         Output_image=quaternion(zeros(params.m,params.n),x(temp),y(temp),z(temp));
-%         % imageq(Output_image)
-%         norm(Xopt-A ,'fro')/norm(A,'fro');
+        % imageq(Output_image)
+   
         % norm(Xopt_sp-A ,'fro')/norm(A,'fro')
         % psnrsp(ii)=psnr(A,Xopt_sp);
 
@@ -267,17 +268,16 @@ for jj= [3 5 7 8]
 
         
 %         if lowrank == 0
-%             save(strcat('./result/inpaint/SLRQA3/SLRQA3info.mat'),'psnrq','ssimq','psnrsp','ssimsp',"infomat")
+%             save(strcat('./result/inpaint/SLRQA2/SLRQAinfo.mat'),'psnrq','ssimq','psnrsp','ssimsp',"infomat")
 %         else
-%             save(strcat('./result/inpaint/SLRQA3/SLRQA3_lowrankinfo60.mat'),'psnrq','ssimq','psnrsp','ssimsp',"infomat")
+%             save(strcat('./result/inpaint/SLRQA2/SLRQA_lowrankinfo60.mat'),'psnrq','ssimq','psnrsp','ssimsp',"infomat")
 %         end
     end
 end
-1;
 if lowrank == 0
-    save(strcat('./result/inpaint/SLRQA3/SLRQA3info.mat'),'psnrq','ssimq','psnrsp','ssimsp',"infomat")
+    save(strcat('./result/inpaint/SLRQA2/SLRQA2info.mat'),'psnrq','ssimq','psnrsp','ssimsp',"infomat")
 else
-    save(strcat('./result/inpaint/SLRQA3/SLRQA3_lowrankinfo60.mat'),'psnrq','ssimq','psnrsp','ssimsp',"infomat")
+    save(strcat('./result/inpaint/SLRQA2/SLRQA2_lowrankinfo60.mat'),'psnrq','ssimq','psnrsp','ssimsp',"infomat")
 end
 
 index = [3 5 7];
@@ -295,7 +295,7 @@ legend('SLRQA(Q)-30','SLRQA(Q)-50','SLRQA(Q)-70','SLRQA(RGB)-30','SLRQA(RGB)-50'
 xlabel('Image Index','FontSize',15)
 ylabel('PSNR','FontSize',15)
 % save(strcat('./result/inpaint/SLRQA/SLRQAinfo.mat'),'psnrq','ssimq','psnrsp','ssimsp')
-saveas(gcf,'./result/inpaint/SLRQA3/comppsnr.png')
+saveas(gcf,'./result/inpaint/SLRQA2/comppsnr.png')
 figure(2)
 plot(ssimq(:,3),'b-','linewidth',2)
 hold on
@@ -308,7 +308,7 @@ axis([1 8 0.75 1])
 legend('SLRQA(Q)-30','SLRQA(Q)-50','SLRQA(Q)-70','SLRQA(RGB)-30','SLRQA(RGB)-50','SLRQA(RGB)-70','Location','southeast')
 xlabel('Image Index','FontSize',15)
 ylabel('SSIM','FontSize',15)
-saveas(gcf,'./result/inpaint/SLRQA3/compssim.png')
+saveas(gcf,'./result/inpaint/SLRQA2/compssim.png')
 % aa=load("LADM50.mat");
 % psnrq=aa.psnrq;
 % psnrsp=aa.psnrsp;
@@ -321,20 +321,13 @@ saveas(gcf,'./result/inpaint/SLRQA3/compssim.png')
 % y=x.^gamma;
 % grad=gamma*x.^(gamma-1);
 % end
-function [y,grad]=WSchatten_gamma(x,gamma,sigmay)
-    n = length(x);
-    w = sqrt(n)/100/sqrt(2)./(sigmay+0.1);
-%     w = ones(size(n));
-    y=w.*x.^gamma;
-    grad=w.*gamma.*sqrt(x.^2).^(gamma-1);
-end
 
-function [y,grad]=Schatten_gamma(x,gamma)
-y=x.^gamma;
-grad=gamma*x.^(gamma-1);
-end
+% function [y,grad]=Schatten_gamma(x,gamma)
+% y=x.^gamma;
+% grad=gamma*x.^(gamma-1);
+% end
 
-function [y,grad]=Laplace(x,gamma)
+function [y,grad]=Laplace(x,gamma,sigmay)
     y=1-exp(-x./gamma);
     grad=1./gamma*exp(-x./gamma);
 end

@@ -328,7 +328,7 @@ saveas(gcf,'./result/inpaint/SLRQA2/compssim.png')
 % end
 
 function [y,grad]=Laplace(x,gamma,sigmay)
-    y=1-exp(-x./gamma);
+    y=1-exp(-(x+1e-10)./gamma);
     grad=1./gamma*exp(-x./gamma);
 end
 

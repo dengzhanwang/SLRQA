@@ -122,7 +122,7 @@ grad = (1-y)./gamma;
 end
 
 function [y,grad] = wSchatten(x,gamma,w)
-y = w.*(x.^gamma);
+y = w.*((x+1e-10).^gamma);
 grad = w.*(gamma*x.^(gamma-1));
 end
 
